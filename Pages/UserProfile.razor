@@ -1,0 +1,30 @@
+@page "/user-profile"
+
+
+<h1>User Profile</h1>
+
+@if (UserInformation != null)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Profile Information</h5>
+            <dl class="row">
+                <dt class="col-sm-3">ID:</dt>
+                <dd class="col-sm-9">@UserInformation.Id</dd>
+                <dt class="col-sm-3">Username:</dt>
+                <dd class="col-sm-9">@UserInformation.UserName</dd>
+                <dt class="col-sm-3">Email:</dt>
+                <dd class="col-sm-9">@UserInformation.Email</dd>
+                <dt class="col-sm-3">First Name:</dt>
+                <dd class="col-sm-9">@UserInformation.FirstName</dd>
+                <dt class="col-sm-3">Last Name:</dt>
+                <dd class="col-sm-9">@UserInformation.LastName</dd>
+                <dt class="col-sm-3">Date of Birth:</dt>
+                <dd class="col-sm-9">@UserInformation.DateOfBirth</dd>
+                <dt class="col-sm-3">User Role ID:</dt>
+                <dd class="col-sm-9">@UserInformation.UserRoleId</dd>
+            </dl>
+        </div>
+    </div>
+}
+

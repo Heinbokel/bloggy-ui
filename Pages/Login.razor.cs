@@ -25,7 +25,7 @@ public partial class Login: ComponentBase {
         HttpStatusCode responseCode = await this._authService.LoginAsync(loginRequest);
 
         if (responseCode == HttpStatusCode.OK) {
-            this._navigationManager.NavigateTo("/");
+            this._navigationManager.NavigateTo("/user-profile");
         } else if (responseCode == HttpStatusCode.Forbidden) {
             this.invalidCredentials = true;
         } else {
