@@ -10,5 +10,6 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient());
 
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<BlogService>();
 
 await builder.Build().RunAsync();

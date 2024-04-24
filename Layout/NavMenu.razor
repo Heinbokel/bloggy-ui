@@ -11,6 +11,9 @@
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/user-profile">My Profile <i class="fas fa-user-alt fa-xl"></i></a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/login" @onclick="Logout">Logout <i class="fas fa-sign-out-alt fa-xl"></i></a>
+                </li>
             } else {
                 <li class="nav-item">
                     <a class="nav-link text-white" href="/login">Login <i class="fas fa-user-alt fa-xl"></i></a>
@@ -38,5 +41,9 @@
             IsLoggedIn = userInfo != null;
             StateHasChanged();
         });
+    }
+
+    private async void Logout() {
+        await this._authService.Logout();
     }
 }

@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -32,6 +33,12 @@ public class AuthService {
 
                 // Store the token in local storage so any other parts of the application can retrieve it if needed.
                 await this.StoreJwt(tokenResponse.Token);
+
+                // From this point on, attach the JWT to all HTTP Requests under the Authorization Header.
+                // Now all subsequent requests will have the authorization header and the JWT passed.
+                // Which the backend can then validate and use as needed.
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenResponse.Token);
+
 
                 // Parse the JWT and store the claims in our User subject in this class.
                 // This will also notify all observers that the user information has been updated.
@@ -75,12 +82,17 @@ public class AuthService {
         await this._jsRuntime.InvokeVoidAsync("localStorage.setItem", JWT_KEY, jwtValue);
     }
 
-    private async Task<string> RetrieveJwtValue() {
+    public async Task<string> RetrieveJwtValue() {
         return await this._jsRuntime.InvokeAsync<string>("localStorage.getItem", JWT_KEY);
     }
 
     public IObservable<UserInformation> GetUserInformationAsync()
     {
         return this.userSubject.AsObservable();
+    }
+
+    public async Task Logout() {
+        this.userSubject.OnNext(null);
+        await this._jsRuntime.InvokeVoidAsync("localStorage.removeItem", JWT_KEY);
     }
 }

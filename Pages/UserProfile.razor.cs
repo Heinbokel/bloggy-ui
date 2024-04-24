@@ -24,7 +24,6 @@ public partial class UserProfile: ComponentBase {
             } else {
                 this.UserInformation = userInfo;
                 this.IsLoading = false;
-                Console.WriteLine(this.UserInformation.FirstName);
                 StateHasChanged();
             }
             base.OnInitialized();
