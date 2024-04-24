@@ -1,0 +1,26 @@
+@page "/login"
+
+<h1>Login</h1>
+
+@if(errorOccured) {
+    <p>An error occurred logging in. Please try again.</p>
+}
+
+@if(invalidCredentials) {
+    <p>Credentials were invalid.</p>
+}
+
+<EditForm Model="@loginRequest" OnValidSubmit="@SubmitForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="inputEmail" class="form-label">Email</label>
+        <InputText id="inputEmail" class="form-control" @bind-Value="@loginRequest.Email" />
+    </div>
+    <div class="mb-3">
+        <label for="inputPassword" class="form-label">Password</label>
+        <InputText id="inputPassword" type="password" class="form-control" @bind-Value="@loginRequest.Password" />
+    </div>
+    <button type="submit" class="btn btn-primary">Login</button>
+</EditForm>
