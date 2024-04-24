@@ -1,7 +1,52 @@
 ﻿@page "/"
+@using Bloggy.Models
+@using bloggy_ui.Services
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Bloggy</h1>
 
-Welcome to your new app.
+@if(IsLoggedIn && BlogPosts.Any()) {
+    <div class="row">
+        @foreach (var post in BlogPosts)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">@post.Title</h5>
+                        <p class="card-text">@post.Content</p>
+                        <p class="card-text"><small class="text-muted">@post.DatePosted.ToString("MMM dd, yyyy")</small></p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+} else {
+    <p>Login to see blog posts!</p>
+}
+
+
+@code {
+    [Inject]
+    private AuthService _authService {get; set;}
+
+    [Inject]
+    private BlogService _blogService {get; set;}
+
+    private bool IsLoggedIn = false;
+
+    private BlogPostResponse[] BlogPosts = [];
+
+    protected override void OnInitialized() {
+        this._authService.GetUserInformationAsync().Subscribe((userInfo) => {
+            this.IsLoggedIn = userInfo != null;
+            if (userInfo != null) {
+                this._blogService.GetBlogPostsAsObservable().Subscribe((blogPosts) => {
+                    this.BlogPosts = blogPosts;
+                    StateHasChanged();
+                });
+            }
+            StateHasChanged(); 
+        });
+    }
+}

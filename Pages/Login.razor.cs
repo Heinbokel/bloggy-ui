@@ -1,18 +1,18 @@
 using System.Net;
 using System.Net.Http.Json;
 using bloggy_ui.Models;
+using bloggy_ui.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace bloggy_ui.Pages;
 
 public partial class Login: ComponentBase {
     [Inject]
-    private HttpClient httpClient {get; set;}
+    private NavigationManager _navigationManager {get; set;}
 
     [Inject]
-    private NavigationManager navigationManager {get; set;}
+    private AuthService _authService {get; set;}
 
-    private static string BASE_URL = "http://localhost:5000";
     private LoginRequest loginRequest = new LoginRequest();
 
     private bool errorOccured = false;
@@ -22,21 +22,15 @@ public partial class Login: ComponentBase {
     {
         this.errorOccured = false;
         this.invalidCredentials = false;
-        try {
-            HttpResponseMessage httpResponseMessage = await this.httpClient.PostAsJsonAsync($"{BASE_URL}/login", this.loginRequest);
+        HttpStatusCode responseCode = await this._authService.LoginAsync(loginRequest);
 
-            if (httpResponseMessage.IsSuccessStatusCode) {   
-                // Handle the JWT contained in the login response             
-                // Navigate to home page.
-                this.navigationManager.NavigateTo("/");
-            } else if (httpResponseMessage.StatusCode == HttpStatusCode.Forbidden) {
-                this.invalidCredentials = true;
-            } else {
-                this.errorOccured = true;
-            }
-        } catch (HttpRequestException exception) {
+        if (responseCode == HttpStatusCode.OK) {
+            this._navigationManager.NavigateTo("/user-profile");
+        } else if (responseCode == HttpStatusCode.Forbidden) {
+            this.invalidCredentials = true;
+        } else {
             this.errorOccured = true;
-            Console.WriteLine(exception.ToString());
         }
+        
     }
 }
