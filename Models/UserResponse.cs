@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 namespace Bloggy.Models;
 
 /// <summary>
-/// Represents a User of Bloggy, returned from the Bloggy API.
+/// Represents a User of Bloggy, returned from the Bloggy API after registering a new user.
 /// </summary>
 public class UserResponse {
 

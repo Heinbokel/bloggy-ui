@@ -37,16 +37,20 @@
 
     private BlogPostResponse[] BlogPosts = [];
 
+    /// <summary>
+    /// Logic to run on the OnInitialized lifecycle hook.
+    /// </summary>
     protected override void OnInitialized() {
+        // Retrieve the user information. If the user is logged in, (user info is not null),
+        // then we want to also retrieve the blog posts available.
         this._authService.GetUserInformationAsync().Subscribe((userInfo) => {
             this.IsLoggedIn = userInfo != null;
             if (userInfo != null) {
                 this._blogService.GetBlogPostsAsObservable().Subscribe((blogPosts) => {
                     this.BlogPosts = blogPosts;
-                    StateHasChanged();
+                    StateHasChanged(); // Let the DOM know to re-render after we have retrieved our user and blog posts.
                 });
             }
-            StateHasChanged(); 
         });
     }
 }

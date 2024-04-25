@@ -1,5 +1,8 @@
 namespace bloggy_ui.Models;
 
+/// <summary>
+/// Represents User Information for the currently signed on user.
+/// </summary>
 public class UserInformation {
     public string Id { get; set;}
     public string UserName { get; set;}

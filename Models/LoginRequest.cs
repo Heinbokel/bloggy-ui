@@ -2,6 +2,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace bloggy_ui.Models;
 
+/// <summary>
+/// Represents the request to login a user.
+/// </summary>
 public class LoginRequest
     {
         [Required(ErrorMessage = "Email is required")]

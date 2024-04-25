@@ -10,6 +10,9 @@ using Microsoft.JSInterop;
 
 namespace bloggy_ui.Services;
 
+/// <summary>
+/// Service responsible for housing logic related to user authorization.
+/// </summary>
 public class AuthService {
     private static readonly string JWT_KEY = "JWT";
     private static readonly string BASE_URL = "http://localhost:5000";
@@ -21,6 +24,21 @@ public class AuthService {
     public AuthService(HttpClient httpClient, IJSRuntime jSRuntime) {
         this._httpClient = httpClient;
         this._jsRuntime = jSRuntime;
+    }
+
+    public async Task<UserResponse?> RegisterAsync(UserRegisterRequest request) {
+        try {
+            HttpResponseMessage httpResponseMessage = await this._httpClient.PostAsJsonAsync($"{BASE_URL}/users", request);
+
+            if (httpResponseMessage.IsSuccessStatusCode) {                
+                return await httpResponseMessage.Content.ReadFromJsonAsync<UserResponse>();
+            } else {
+                return null;
+            }
+        } catch (HttpRequestException exception) {
+            return null;
+            Console.WriteLine(exception.ToString());
+        }
     }
 
     public async Task<HttpStatusCode> LoginAsync(LoginRequest loginRequest) {
