@@ -1,35 +1,31 @@
-using System.Net.Http.Json;
+using Bloggy.Models;
 using bloggy_ui.Models;
+using bloggy_ui.Services;
 using Microsoft.AspNetCore.Components;
 
 namespace bloggy_ui.Pages;
 
+/// <summary>
+/// Page that handles user registration.
+/// </summary>
 public partial class Register: ComponentBase {
     [Inject]
-    private HttpClient httpClient {get; set;}
+    private AuthService _authService {get; set;}
 
     [Inject]
-    private NavigationManager navigationManager {get; set;}
+    private NavigationManager _navigationManager {get; set;}
 
-    private static string BASE_URL = "http://localhost:5000";
     private UserRegisterRequest userRegisterRequest = new UserRegisterRequest();
     private bool errorOccured = false;
 
     private async Task HandleValidSubmit()
     {
         this.errorOccured = false;
-        try {
-            HttpResponseMessage httpResponseMessage = await this.httpClient.PostAsJsonAsync($"{BASE_URL}/users", this.userRegisterRequest);
-
-            if (httpResponseMessage.IsSuccessStatusCode) {                
-                // Navigate to login. We don't really need to use the response from registration at all.
-                this.navigationManager.NavigateTo("/login");
-            } else {
-                this.errorOccured = true;
-            }
-        } catch (HttpRequestException exception) {
+        UserResponse? registeredUser = await this._authService.RegisterAsync(userRegisterRequest);
+        if (registeredUser != null) {
+            this._navigationManager.NavigateTo("/login");
+        } else {
             this.errorOccured = true;
-            Console.WriteLine(exception.ToString());
         }
     }
 }

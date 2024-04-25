@@ -34,15 +34,23 @@
 
     private bool IsLoggedIn { get; set; } = false;
 
+    /// <summary>
+    /// Logic to run on the OnInitialized lifecycle hook.
+    /// </summary>
     protected override void OnInitialized()
     {
+        // Retrieves and subscribes to the user information observable in the auth service.
+        // The nav bar will be able to update its links depending on if the user is logged in or out.
         this._authService.GetUserInformationAsync().Subscribe((userInfo) =>
         {
             IsLoggedIn = userInfo != null;
-            StateHasChanged();
+            StateHasChanged(); // This is required to tell our already rendered DOM to re-render with this new data.
         });
     }
 
+    /// <summary>
+    /// Triggers a call to the AuthService to log the user out.
+    /// </summary>
     private async void Logout() {
         await this._authService.Logout();
     }

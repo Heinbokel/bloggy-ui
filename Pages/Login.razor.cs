@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace bloggy_ui.Pages;
 
+/// <summary>
+/// Page for logging a user in.
+/// </summary>
 public partial class Login: ComponentBase {
     [Inject]
     private NavigationManager _navigationManager {get; set;}
@@ -18,6 +21,11 @@ public partial class Login: ComponentBase {
     private bool errorOccured = false;
     private bool invalidCredentials = false;
 
+    /// <summary>
+    /// Submits the login form, waiting for the auth service to return the server's response.
+    /// If successful, navigates to the user's profile. Otherwise sets our status booleans.
+    /// </summary>
+    /// <returns>The Task to return.</returns>
     private async Task SubmitForm()
     {
         this.errorOccured = false;
