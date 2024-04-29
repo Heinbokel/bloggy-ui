@@ -17,10 +17,12 @@
     <div class="mb-3">
         <label for="inputEmail" class="form-label">Email</label>
         <InputText id="inputEmail" class="form-control" @bind-Value="@loginRequest.Email" />
+        <ValidationMessage For="@(() => loginRequest.Email)"/>
     </div>
     <div class="mb-3">
         <label for="inputPassword" class="form-label">Password</label>
         <InputText id="inputPassword" type="password" class="form-control" @bind-Value="@loginRequest.Password" />
+        <ValidationMessage For="@(() => loginRequest.Password)"/>
     </div>
     <button type="submit" class="btn btn-primary">Login</button>
 </EditForm>
