@@ -19,13 +19,24 @@ public class AuthService {
     private readonly HttpClient _httpClient;
     private readonly IJSRuntime _jsRuntime;
 
+    // This subject, or observable, is responsible for providing the state of the user to the entire application.
     private BehaviorSubject<UserInformation?> userSubject = new BehaviorSubject<UserInformation?>(null);
 
+    /// <summary>
+    /// Constructor for dependency injection.
+    /// </summary>
+    /// <param name="httpClient">The HttpClient to provide to this class.</param>
+    /// <param name="jSRuntime">The IJSRuntime to provide to this class.</param>
     public AuthService(HttpClient httpClient, IJSRuntime jSRuntime) {
         this._httpClient = httpClient;
         this._jsRuntime = jSRuntime;
     }
 
+    /// <summary>
+    /// Attempts to register the user by submitting the request to the backend.
+    /// </summary>
+    /// <param name="request">The UserRegisterRequest to submit.</param>
+    /// <returns>The UserResponse containing the created user, or null if not successful.</returns>
     public async Task<UserResponse?> RegisterAsync(UserRegisterRequest request) {
         try {
             HttpResponseMessage httpResponseMessage = await this._httpClient.PostAsJsonAsync($"{BASE_URL}/users", request);
@@ -36,11 +47,16 @@ public class AuthService {
                 return null;
             }
         } catch (HttpRequestException exception) {
-            return null;
             Console.WriteLine(exception.ToString());
+            return null;
         }
     }
 
+    /// <summary>
+    /// Attempts to log the user in, given the credentials provided in the LoginRequest.
+    /// </summary>
+    /// <param name="loginRequest">The LoginRequest to use, containing the credentials to be used.</param>
+    /// <returns>The HttpStatusCode resulting from the HTTP Request to return.</returns>
     public async Task<HttpStatusCode> LoginAsync(LoginRequest loginRequest) {
         try {
             HttpResponseMessage httpResponseMessage = await _httpClient.PostAsJsonAsync($"{BASE_URL}/login", loginRequest);
@@ -70,6 +86,11 @@ public class AuthService {
         }
     }
 
+    /// <summary>
+    /// Parses the encoded JWT for user information.
+    /// </summary>
+    /// <param name="token">The encoded JWT to parse.</param>
+    /// <returns>The Task<UserInformation> to return.</returns>
     private async Task<UserInformation> ParseJwtForUser(string token)
     {
         JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
@@ -96,21 +117,39 @@ public class AuthService {
         };
     }
 
+    /// <summary>
+    /// Stores the given JWT value in local storage.
+    /// </summary>
+    /// <param name="jwtValue">The JWT value to store.</param>
+    /// <returns>The Task to return.</returns>
     private async Task StoreJwt(string jwtValue) {
         await this._jsRuntime.InvokeVoidAsync("localStorage.setItem", JWT_KEY, jwtValue);
     }
 
+    /// <summary>
+    /// Retrieves the JWT value from local storage.
+    /// </summary>
+    /// <returns>The JWT value in the Task to return.</returns>
     public async Task<string> RetrieveJwtValue() {
         return await this._jsRuntime.InvokeAsync<string>("localStorage.getItem", JWT_KEY);
     }
 
-    public IObservable<UserInformation> GetUserInformationAsync()
-    {
-        return this.userSubject.AsObservable();
-    }
-
+    /// <summary>
+    /// Logs the user out by setting the user subject's next value to null
+    /// and removing the JWT from local storage.
+    /// </summary>
+    /// <returns>The Task to return.</returns>
     public async Task Logout() {
         this.userSubject.OnNext(null);
         await this._jsRuntime.InvokeVoidAsync("localStorage.removeItem", JWT_KEY);
+    }
+
+    /// <summary>
+    /// Returns the user subject as an observable.
+    /// </summary>
+    /// <returns>The IObservable<UserInformation> to return.</returns>
+    public IObservable<UserInformation> GetUserInformationAsync()
+    {
+        return this.userSubject.AsObservable();
     }
 }

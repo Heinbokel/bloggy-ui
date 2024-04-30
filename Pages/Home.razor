@@ -6,7 +6,7 @@
 
 <h1>Bloggy</h1>
 
-@if(IsLoggedIn && BlogPosts.Any()) {
+@if(IsLoggedIn) {
     <div class="row">
         @foreach (var post in BlogPosts)
         {
