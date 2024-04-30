@@ -9,15 +9,19 @@ namespace bloggy_ui.Services;
 /// </summary>
 public class BlogService {
 
-    private static readonly string BASE_URL = "http://localhost:5000";
+    private string BASE_URL;
     private readonly HttpClient _httpClient;
+    private readonly IConfiguration _configuration;
 
     /// <summary>
     /// Constructor for dependency injection.
     /// </summary>
     /// <param name="httpClient">The HttpClient to provide to this class.</param>
-    public BlogService(HttpClient httpClient) {
+    /// <param name="configuration">The IConfiguration to provide this class.</param>
+    public BlogService(HttpClient httpClient, IConfiguration configuration) {
         this._httpClient = httpClient;
+        this._configuration = configuration;
+        this.BASE_URL = _configuration.GetValue<string>("BaseUrl");
     }
 
     /// <summary>

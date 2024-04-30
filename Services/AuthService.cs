@@ -15,9 +15,10 @@ namespace bloggy_ui.Services;
 /// </summary>
 public class AuthService {
     private static readonly string JWT_KEY = "JWT";
-    private static readonly string BASE_URL = "http://localhost:5000";
+    private string BASE_URL;
     private readonly HttpClient _httpClient;
     private readonly IJSRuntime _jsRuntime;
+    private readonly IConfiguration _configuration;
 
     // This subject, or observable, is responsible for providing the state of the user to the entire application.
     private BehaviorSubject<UserInformation?> userSubject = new BehaviorSubject<UserInformation?>(null);
@@ -27,9 +28,13 @@ public class AuthService {
     /// </summary>
     /// <param name="httpClient">The HttpClient to provide to this class.</param>
     /// <param name="jSRuntime">The IJSRuntime to provide to this class.</param>
-    public AuthService(HttpClient httpClient, IJSRuntime jSRuntime) {
+    /// <param name="configuration">The IConfiguration to provide to this class.</param>
+    public AuthService(HttpClient httpClient, IJSRuntime jSRuntime, IConfiguration configuration) {
         this._httpClient = httpClient;
         this._jsRuntime = jSRuntime;
+        this._configuration = configuration;
+        Console.WriteLine("FROM CONFIG: " + _configuration.GetValue<string>("BaseUrl"));
+        this.BASE_URL = _configuration.GetValue<string>("BaseUrl");
     }
 
     /// <summary>
