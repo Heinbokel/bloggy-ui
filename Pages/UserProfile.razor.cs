@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Components;
 
 namespace bloggy_ui.Pages;
 
+/// <summary>
+/// Component representing the User Profile page.
+/// </summary>
 public partial class UserProfile: ComponentBase {
     
     [Inject]
@@ -16,6 +19,10 @@ public partial class UserProfile: ComponentBase {
 
     private bool IsLoading {get; set;} = true;
 
+    /// <summary>
+    /// Logic to run in the OnInitialized lifecycle hook.
+    /// </summary>
+    /// <returns></returns>
     protected override async void OnInitialized() {
         this.IsLoading = true;
         this._authService.GetUserInformationAsync().Subscribe((userInfo) => {
